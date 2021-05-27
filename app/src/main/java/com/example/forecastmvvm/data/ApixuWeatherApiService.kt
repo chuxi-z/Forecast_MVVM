@@ -1,6 +1,8 @@
 package com.example.forecastmvvm.data
 
+import com.example.forecastmvvm.data.network.ConnectivityInterceptor
 import com.example.forecastmvvm.data.network.response.CurrentWeatherResponse
+import com.example.forecastmvvm.internal.NoConnectivityException
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Deferred
@@ -26,7 +28,9 @@ interface ApixuWeatherApiService {
 
 
     companion object{
-        operator fun invoke(): ApixuWeatherApiService{
+        operator fun invoke(
+            connectivityInterceptor: ConnectivityInterceptor
+        ): ApixuWeatherApiService{
             val requestInterceptor = Interceptor{chain ->  
                 val url = chain.request()
                         .url()
@@ -43,6 +47,7 @@ interface ApixuWeatherApiService {
 
             val okHttpClient = OkHttpClient.Builder()
                     .addInterceptor(requestInterceptor)
+                    .addInterceptor(connectivityInterceptor)
                     .build()
 
             return Retrofit.Builder()
