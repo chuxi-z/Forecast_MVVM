@@ -2,23 +2,16 @@ package com.example.forecastmvvm.ui.weather.current
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.forecastmvvm.R
-import com.example.forecastmvvm.data.ApixuWeatherApiService
-import com.example.forecastmvvm.data.network.ConnectivityInterceptor
-import com.example.forecastmvvm.data.network.ConnectivityInterceptorImpl
-import com.example.forecastmvvm.data.network.WeatherNetworkDataSource
-import com.example.forecastmvvm.data.network.WeatherNetworkDataSourceImpl
+import com.example.forecastmvvm.internal.glide.GlideApp
 import com.example.forecastmvvm.ui.base.ScopeFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -63,8 +56,51 @@ class CurrentWeatherFragment : ScopeFragment(), KodeinAware {
         weather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
 
-            textView.text = it.toString()
+            group_loading.visibility = View.GONE
+            updateDateToToday()
+            updateLocation("London")
+            updateCondition(it.conditionText.substring(2, it.conditionText.length-2))
+            updateTemperatures(it.temperature, it.feelsLikeTemperature)
+            updateVisibility(it.visibilityDistance)
+            updateWind(it.windDirection, it.windSpeed)
+            updatePrecipitation(it.precipitationVolume)
+            GlideApp.with(this@CurrentWeatherFragment)
+                    .load("${it.conditionIconUrl.get(0)}")
+                    .into(imageView_condition_icon)
         })
     }
 
+
+    private fun updateLocation(location: String){
+        (activity as? AppCompatActivity)?.supportActionBar?.title = location
+    }
+
+    private fun updateDateToToday(){
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "Today"
+    }
+
+    private fun updateTemperatures(temperature: Double, feelsLike: Double){
+        val unitAbbreviation = if (viewModel.isMetric) "°C" else "°F"
+        textView_temperature.text = "$temperature$unitAbbreviation"
+        textView_feels_like_temperature.text = "Feels like $feelsLike$unitAbbreviation"
+    }
+
+    private fun updateCondition(condition: String){
+        textView_condition.text = condition
+    }
+
+    private fun updatePrecipitation(volumn: Double){
+        val unitAbbreviation = if (viewModel.isMetric) "mm" else "in"
+        textView_precipitation.text = "Precipitation: $volumn$unitAbbreviation"
+    }
+
+    private fun updateWind(windDirection: String, windSpeed: Double){
+        val unitAbbreviation = if (viewModel.isMetric) "kph" else "mph"
+        textView_wind.text = "Wind: $windDirection, $windSpeed $unitAbbreviation"
+    }
+
+    private fun updateVisibility(distance: Double){
+        val unitAbbreviation = if (viewModel.isMetric) "km" else "mi."
+        textView_visibility.text = "VisibilityDistance: $distance $unitAbbreviation"
+    }
 }
