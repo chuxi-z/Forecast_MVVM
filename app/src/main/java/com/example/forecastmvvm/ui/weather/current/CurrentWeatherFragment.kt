@@ -42,7 +42,7 @@ class CurrentWeatherFragment : Fragment() {
 
         val apiService = ApixuWeatherApiService(ConnectivityInterceptorImpl(this.context!!))
         val weatherNetworkDataSourceImpl = WeatherNetworkDataSourceImpl(apiService)
-        weatherNetworkDataSourceImpl.downloadCurrentWeather.observe(this, Observer {
+        weatherNetworkDataSourceImpl.downloadCurrentWeather.observe(viewLifecycleOwner, Observer {
             textView.text = it.toString()
         })
 
