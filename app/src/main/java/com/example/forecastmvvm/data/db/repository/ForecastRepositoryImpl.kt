@@ -1,5 +1,6 @@
 package com.example.forecastmvvm.data.db.repository
 
+import androidx.core.graphics.createBitmap
 import androidx.lifecycle.LiveData
 import com.example.forecastmvvm.data.db.CurrentWeatherDao
 import com.example.forecastmvvm.data.db.unitlocalized.UnitSpecificCurrentWeatherEntry

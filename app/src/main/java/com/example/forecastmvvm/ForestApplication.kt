@@ -3,6 +3,8 @@ package com.example.forecastmvvm
 import android.app.Application
 import com.example.forecastmvvm.data.ApixuWeatherApiService
 import com.example.forecastmvvm.data.db.ForecastDatabase
+import com.example.forecastmvvm.data.db.provider.UnitProvider
+import com.example.forecastmvvm.data.db.provider.UnitProviderImpl
 import com.example.forecastmvvm.data.db.repository.ForecastRepository
 import com.example.forecastmvvm.data.db.repository.ForecastRepositoryImpl
 import com.example.forecastmvvm.data.network.ConnectivityInterceptor
@@ -31,7 +33,9 @@ class ForestApplication: Application(), KodeinAware {
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
         bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) }
 
-        bind() from provider { CurrentWeatherViewModelFactory(instance()) }
+        bind<UnitProvider>() with singleton { UnitProviderImpl(instance()) }
+
+        bind() from provider { CurrentWeatherViewModelFactory(instance(), instance()) }
 
     }
 
