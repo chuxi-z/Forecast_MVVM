@@ -2,7 +2,6 @@ package com.example.forecastmvvm.data.db.repository
 
 import androidx.lifecycle.LiveData
 import com.example.forecastmvvm.data.db.CurrentWeatherDao
-import com.example.forecastmvvm.data.db.entity.CurrentWeatherEntry
 import com.example.forecastmvvm.data.db.unitlocalized.UnitSpecificCurrentWeatherEntry
 import com.example.forecastmvvm.data.network.WeatherNetworkDataSource
 import com.example.forecastmvvm.data.network.response.CurrentWeatherResponse
@@ -10,9 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
-import org.threeten.bp.ZonedDateTime
-import kotlin.math.min
+import org.threeten.bp.ZonedDateTime 
 
 class ForecastRepositoryImpl(
         private val currentWeatherDao: CurrentWeatherDao,
