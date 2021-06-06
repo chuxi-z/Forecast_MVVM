@@ -20,4 +20,8 @@ class CurrentWeatherViewModel(
     val weather by LazyDeferred {
         forecastRepository.getCurrentWeather(isMetric)
     }
+
+    val weatherLocation by LazyDeferred {
+        forecastRepository.getWeatherLocation()
+    }
 }
